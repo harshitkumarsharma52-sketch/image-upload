@@ -5,9 +5,7 @@ const postModel=require('./models/post.model');
 const cors=require("cors")
 
 const app=express();
-app.use(cors({
-    origin: 'https://image-upload-1-t76t.onrender.com'
-}))
+app.use(cors())
 app.use(express.json());
 
 const upload=multer({storage:multer.memoryStorage()})
