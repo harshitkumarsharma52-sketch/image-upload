@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL || "https://image-backend-v8mm.onrender.com";
 const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
 const MAX_CAPTION = 200;
 const COLORS = ["#79b4ff", "#4f8cff", "#ffd166", "#ff6b9a", "#7cffb2", "#c4a3ff"];
