@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL || "https://image-backend-v8mm.onrender.com";
 const STORE_KEY = "liked-posts";
 
 const readLiked = () => {
