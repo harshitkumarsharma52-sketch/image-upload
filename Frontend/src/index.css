@@ -1770,3 +1770,46 @@ a.profile-btn {
     width: 100%;
   }
 }
+/* =====================================================
+   CREATE PAGE: "View feed" button
+===================================================== */
+.create-nav {
+  position: absolute;
+  top: calc(18px + env(safe-area-inset-top, 0px));
+  right: 18px;
+  z-index: 5;
+}
+
+/* leave room at the top so the button never overlaps a tall form */
+.create-post {
+  padding-top: calc(88px + env(safe-area-inset-top, 0px));
+}
+
+.nav-arrow {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: translate 0.35s var(--ease);
+}
+
+@media (hover: hover) {
+  .profile-btn:hover .nav-arrow {
+    translate: 5px 0;
+  }
+}
+
+/* disabled look while the upload is running */
+.profile-btn[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .create-nav {
+    right: 12px;
+  }
+}
