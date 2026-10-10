@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL || "https://image-backend-v8mm.onrender.com";
 const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
@@ -82,6 +82,21 @@ const CreatePost = () => {
     setPreview(URL.createObjectURL(file));
   };
 
+  /* ---------- leaving to the feed ---------- */
+  const guardLeave = (e) => {
+    // upload is running: don't leave, the post could be left half done
+    if (status === "loading") {
+      e.preventDefault();
+      return;
+    }
+    // something is filled in: ask once so the work isn't lost by accident
+    if (status === "idle" && (preview || caption.trim())) {
+      if (!window.confirm("Discard this post and go to the feed?")) {
+        e.preventDefault();
+      }
+    }
+  };
+
   /* ---------- drag and drop ---------- */
   const onDrop = (e) => {
     e.preventDefault();
@@ -130,6 +145,20 @@ const CreatePost = () => {
 
   return (
     <section className="create-post">
+      <nav className="create-nav" aria-label="Page navigation">
+        <Link
+          to="/feed"
+          className="profile-btn primary"
+          onClick={guardLeave}
+          aria-disabled={status === "loading"}
+        >
+          View feed
+          <svg className="nav-arrow" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h14m0 0-6-6m6 6-6 6" />
+          </svg>
+        </Link>
+      </nav>
+
       <form ref={formRef} onSubmit={handleSubmit} onMouseMove={onMove}>
         <span className="form-ring" aria-hidden="true" />
         <span className="form-glow" aria-hidden="true" />
@@ -220,4 +249,3 @@ const CreatePost = () => {
 };
 
 export default CreatePost;
-  
