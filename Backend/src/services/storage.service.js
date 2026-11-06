@@ -1,21 +1,41 @@
+
 const ImageKit = require("@imagekit/nodejs");
+const { toFile } = require("@imagekit/nodejs");
 
 const imagekit = new ImageKit({
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
 });
 
-// file name ko safe banao (sirf letters, numbers, . _ -)
+// Safe filename
 const safeName = (name = "image.jpg") =>
   name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-80) || "image.jpg";
 
-async function uploadFile(buffer, originalName) {
+// Upload image
+async function uploadFile(buffer, originalName, mimeType) {
   const result = await imagekit.files.upload({
-    file: buffer.toString("base64"),
+    // A multipart file avoids the 33% payload expansion of converting the image to base64.
+    file: await toFile(buffer, safeName(originalName), { type: mimeType }),
     fileName: safeName(originalName),
     folder: "/posts",
-    useUniqueFileName: true, // same naam ki file overwrite nahi hogi
+    useUniqueFileName: true,
   });
-  return result;
+
+  return {
+    url: result.url,
+    fileId: result.fileId,
+  };
 }
 
-module.exports = uploadFile;
+// Delete image from ImageKit
+async function deleteFile(fileId) {
+  if (!fileId) {
+    throw new Error("ImageKit fileId is required");
+  }
+
+  return await imagekit.files.delete(fileId);
+}
+
+module.exports = {
+  uploadFile,
+  deleteFile,
+};

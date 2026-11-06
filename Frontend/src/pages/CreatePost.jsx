@@ -1,12 +1,20 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import imageCompression from "browser-image-compression";
 import { useNavigate, Link } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-const MAX_SIZE = 15 * 1024 * 1024; // 15 MB (compress hone ke baad chhoti ho jati hai)
+// Keep this in sync with the API limit so a file is never accepted here then rejected later.
+const MAX_SIZE = 10 * 1024 * 1024;
 const MAX_CAPTION = 200;
 const COLORS = ["#79b4ff", "#4f8cff", "#ffd166", "#ff6b9a", "#7cffb2", "#c4a3ff"];
+const ACCEPTED_IMAGE_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "image/avif",
+]);
 
 const makeConfetti = () =>
   Array.from({ length: 28 }, (_, i) => {
@@ -48,6 +56,7 @@ const CreatePost = () => {
 
   const [preview, setPreview] = useState("");
   const [fileName, setFileName] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
   const [dragging, setDragging] = useState(false);
   const [caption, setCaption] = useState("");
   const [status, setStatus] = useState("idle"); // idle | loading | success
@@ -91,13 +100,14 @@ const CreatePost = () => {
     if (fileRef.current) fileRef.current.value = "";
     setPreview("");
     setFileName("");
+    setSelectedFile(null);
   };
 
   const showFile = (file) => {
     if (!file) return clearFile();
-    if (!file.type.startsWith("image/")) {
+    if (!ACCEPTED_IMAGE_TYPES.has(file.type)) {
       clearFile();
-      return warn("Please choose an image file.");
+      return warn("Choose a JPG, PNG, WebP, GIF, or AVIF image.");
     }
     if (file.size > MAX_SIZE) {
       clearFile();
@@ -105,6 +115,7 @@ const CreatePost = () => {
     }
     setError("");
     setFileName(file.name);
+    setSelectedFile(file);
     setPreview(URL.createObjectURL(file));
   };
 
@@ -127,11 +138,6 @@ const CreatePost = () => {
     setDragging(false);
     const file = e.dataTransfer.files?.[0];
     if (!file) return;
-    if (fileRef.current) {
-      const dt = new DataTransfer();
-      dt.items.add(file);
-      fileRef.current.files = dt.files; // so FormData picks it up
-    }
     showFile(file);
   };
 
@@ -146,7 +152,7 @@ const CreatePost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (status !== "idle") return;
-    if (!fileRef.current?.files?.length) return warn("Add a photo first.");
+    if (!selectedFile) return warn("Add a photo first.");
 
     setStatus("loading");
     setProgress(0);
@@ -155,7 +161,7 @@ const CreatePost = () => {
     try {
       // 1. compress
       setStage("compressing");
-      const original = fileRef.current.files[0];
+      const original = selectedFile;
       const file = await compress(original);
 
       // 2. upload (progress ke saath)
@@ -229,7 +235,7 @@ const CreatePost = () => {
             ref={fileRef}
             type="file"
             name="image"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
             aria-label="Post image"
             onChange={(e) => showFile(e.target.files[0])}
           />
@@ -245,7 +251,7 @@ const CreatePost = () => {
                 <path d="M4 16.5V18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1.5M12 15V4m0 0L8 8m4-4 4 4" />
               </svg>
               <strong>Drop a photo here</strong>
-              <small>or click to browse · max 15 MB</small>
+              <small>or click to browse · max 10 MB</small>
             </span>
           )}
         </label>

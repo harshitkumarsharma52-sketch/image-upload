@@ -1809,3 +1809,38 @@ a.profile-btn {
     right: 12px;
   }
 }
+
+/* Delete Post Button */
+
+.delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 8px;
+  background: #dc2626;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: #b91c1c;
+}
+
+.delete-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.delete-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.post-actions .delete-btn {
+  position: relative;
+}
+
