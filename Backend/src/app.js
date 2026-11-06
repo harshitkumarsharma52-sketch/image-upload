@@ -19,7 +19,7 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://image-frontend-1ahp.onrender.com",
+  "https://note-application-frontend-2iqb.onrender.com",
   process.env.FRONTEND_URL,
   ...(process.env.CLIENT_ORIGINS || "").split(","),
 ]
