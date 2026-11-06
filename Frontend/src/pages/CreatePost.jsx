@@ -3,7 +3,7 @@ import axios from "axios";
 import imageCompression from "browser-image-compression";
 import { useNavigate, Link } from "react-router-dom";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL || "https://image-upload-42r1.onrender.com";
 // Keep this in sync with the API limit so a file is never accepted here then rejected later.
 const MAX_SIZE = 10 * 1024 * 1024;
 const MAX_CAPTION = 200;
