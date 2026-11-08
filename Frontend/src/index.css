@@ -1820,14 +1820,14 @@ a.profile-btn {
   padding: 9px 12px;
   border: none;
   border-radius: 8px;
-  background: #dc2626;
+  background: #black;
   color: #fff;
   cursor: pointer;
   transition: background 0.2s ease;
 }
 
 .delete-btn:hover {
-  background: #b91c1c;
+  background: green;
 }
 
 .delete-btn:disabled {
